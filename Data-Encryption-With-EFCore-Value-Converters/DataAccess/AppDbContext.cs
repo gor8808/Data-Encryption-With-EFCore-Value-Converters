@@ -11,7 +11,7 @@ namespace Data_Encryption_With_EFCore_Value_Converters.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseNpgsql("Host=localhost;Database=EntitiesDataDB;Username=postgres;Password=fs86jj0b");
+            optionsBuilder.UseNpgsql("Host=localhost;Database=EntitiesDataDB;Username=postgres;Password=psw");
 
             optionsBuilder.LogTo(Console.WriteLine);
         }
