@@ -1,0 +1,24 @@
+participant app as "Application"
+participant ef as "EFCore"
+participant convertor as "EFCore Value convertor"
+participant translator as "EFCore Query translator"
+participant db as "Database"
+
+app -> ef: Creates an entity with SensitiveInfo = Hi
+ef -> convertor: Applies all registered value converters for the entity's properties
+convertor -> convertor: Runs EncryptionConvertor's convertToProviderExpression to encrypt data \n(x => EncryptionExtension.Encrypt(x))
+convertor -> ef: Returns entity with applied value converters
+ef -> translator: Translates insert query into SQL
+translator -> ef: Returns SQL query: \n INSERT INTO "Entities"("SensitiveInfo") VALUES ("oO64D2IzNWKSQnDM8fcZ/w==");
+ef -> db: Executes query to create entity
+
+
+app -> ef: Requests all entities
+ef -> translator: Translates get query into SQL
+translator -> ef: Returns SQL Query: SELECT * FROM "Entities"
+ef -> db: Executes query
+db -> ef: Returns all entities
+ef -> convertor: Applies all registered value converters for the entity's properties
+convertor -> convertor: Runs EncryptionConvertor's convertFromProviderExpression to decrypt data \n(x => EncryptionExtension.Decrypt(x))\n changes "oO64D2IzNWKSQnDM8fcZ/w==" back to "Hi"  
+convertor -> ef: Returns entity with applied value converters
+ef -> app: Returns all entities with applied value converters
